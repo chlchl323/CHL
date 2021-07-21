@@ -1,0 +1,130 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "Food";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section js{
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#content',
+            data: {
+                foods: [],
+                foodTypes: [],
+                cartRecords: [],
+                sum:[],
+            },
+            created: function () {
+                this.getFoodsTypes();
+                this.getFoods(0);
+                this.cartRecord();
+                this.getSum();
+            },
+            methods: {
+                getFoods: function (index) {
+                    axios.get('/Foods/GetFood?foodsid=' + (index + 1)).then(res => {
+                        this.foods = res.data;
+                    })
+                },
+                getFoodsTypes: function (index) {
+                    axios.get('/Foods/FoodType').then(res => {
+                        this.foodTypes = res.data
+                    })
+                },
+                isAndaddCart: function (id) {
+                    axios.get('/Foods/IsUser').then(res => {
+                        if (res.data == true) {
+                            alert("请先登录！")
+                        }  else if(id!=0){
+                            this.addCart(id);
+                        } else {
+
+                        }
+                    })                  
+                },
+                addCart: function (id) {
+                    axios.get('/Foods/AddCart?foodsid=' + id).then(res => {
+                        this.getSum();                    
+                    })
+                },
+                cartRecord: function () {                    
+                    axios.get('/Foods/CartRecord').then(res => {
+                        this.cartRecords = res.data;
+                        this.getSum();
+                    })
+                },
+                add: function (foodid) {
+                    axios.get('/Foods/Add?foodid=' + foodid).then(res => {
+                        this.getSum();
+                    })
+                },
+                sub: function (foodid) {
+                    axios.get('/Foods/Sub?foodid=' + foodid).then(res => {
+                        this.getSum();
+                    })
+                },
+                getSum: function () {
+                    axios.get('/Foods/GetSum').then(res => {
+                        this.sum = res.data;
+                        this.cartRecord();
+                    })
+                },
+            },
+        });
+    </script>
+}
+<form action="/Orders/Order" method="get">
+    
+    <div id="content">
+        <div id="menu">
+            <ul class="foodMenu">
+                <li v-for="foodType,index in foodTypes" :key="index" :class="{goods1:index==0,goods2:index==1,goods3:index==2,goods4:index==3,goods5:index==4,goods6:index==5}" @@click="getFoods(index)">
+                    <a href="javascript:void(0)">{{foodType.foodTypeName }}</a>
+                </li>
+            </ul>
+        </div>
+        <p class="page">
+
+            <!-- AspNetPager 7.4.5 Copyright:2003-2013 Webdiyer (www.webdiyer.com) -->
+            <div id="ContentPlaceHolder1_AspNetPager1">
+                <a class="pre_next_nums_btn" disabled="disabled" style="margin-right:5px;">上一页</a><span class="current_btn" style="margin-right:5px;">1</span><a class="pre_next_nums_btn" disabled="disabled" style="margin-right:5px;">下一页</a>
+            </div>
+            <!-- AspNetPager 7.4.5 Copyright:2003-2013 Webdiyer (www.webdiyer.com) -->
+        </p>
+        <div class="goods">
+            <div class="pruduct" v-for="food in foods">
+                <div>
+                    <img :src="'/'+food.picUrl" width="210" height="150" border="0" alt="">
+                </div>
+                <div class="goods_text">
+                    <div class="name">{{food.foodName}}</div>
+                    <div class="price">{{food.price}}</div>
+                    <a class="btnAdd" href="#" @@click="isAndaddCart(food.foodId)">加入订单</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="dingdan">
+            <div class="dingdan_div"><h2>我的购物车</h2></div>
+            <div class="dingdan_div">
+                <ul>
+                    <li v-for="cartRecord in cartRecords">
+                        <p>{{cartRecord.food.foodName}}</p>{{cartRecord.food.price}}
+                        <span>
+                            <a id="LinkButton1_0" class="btnAdd" href="#" @@click="sub(cartRecord.food.foodId)">-</a>
+                            &nbsp;{{cartRecord.count}}&nbsp;
+                            <a id="LinkButton2_0" class="btnAdd" href="#" @@click="add(cartRecord.food.foodId)">+</a>
+                        </span>
+                        <div class="clear"></div>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="dingdan_div">
+                <input type="submit" name="ctl00$ContentPlaceHolder1$btnCreatOrder" value="立即下单" id="ContentPlaceHolder1_btnCreatOrder" class="btnCreateOrder" v-on:click="isAndaddCart(0)">
+                <span>总计<span style="color:#f00;">￥{{sum}}</span></span>
+            </div>
+        </div>
+    </div>
+</form>
+
+

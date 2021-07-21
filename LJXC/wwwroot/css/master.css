@@ -1,0 +1,167 @@
+body
+{
+    background:url(../images/bg.jpg);
+    font-family:"Î¢ÈíÑÅºÚ";
+}
+.clear{ 
+    clear:both; 
+}
+*{
+    margin:0;
+    padding:0;
+}
+a{
+	text-decoration:none;
+	color:black;
+}
+#container {
+    width: 1000px;
+    margin: 0 auto;
+}
+#header {
+    width:100%;
+	font-size: 12px;
+	height: 83px;
+	background:url(../images/head_bg.png) repeat-x;
+}
+.logo {
+	height: 85px;
+	width: 500px;
+	float: left;
+	font-size:36px;
+}
+.login {
+	float: right;
+	height: 20px;
+	font-size:12px;
+	color:#FFDD00;
+	margin-top:11px;
+	margin-right:30px;
+    margin-bottom:20px;
+}
+
+.loginUser{
+	height:40px;
+	float:right;
+	margin-top:12px;
+	margin-right:30px;
+	font-size:12px;
+	line-height:20px;
+	color:white;
+}
+.textbox{
+	width:120px;
+	height:18px;
+	margin:auto 0px;
+	border:solid #FFDD00 1px;
+}
+.button {
+    border-style: none;
+    border-color: inherit;
+    border-width: 0px;
+    font-size: 12px;
+    height: 20px;
+    width: 30px;
+    background: #FFDD00;
+    color: #000;
+    text-align: center;
+}
+.register{
+	float:right;
+	height:20px;
+	width:200px;
+	clear:right;
+	font-size:12px;
+	font-weight:bold;
+	color:#FFDD00;
+	margin-top:5px;
+}
+.register a{
+	color:#FFDD00;
+}
+.nav {
+	width:310px;
+	height:30px;
+	float:right;
+	clear:right;
+}
+.check{
+	height:27px;
+	width:135px;
+	float:left;
+	text-align:center;
+	background:#FFDD00;
+	font-size:14px;
+	font-weight:bold;
+	color:#900;
+	margin-left:5px;
+	line-height:30px;
+	background-color:#FFDD00;
+	border-radius:5px;
+}
+.check a:hover{
+	color:red;
+}
+#white{
+	background-color:#ffffff;
+}
+#footer {
+    font-size: 14px;
+    margin: 10px 0px;
+}
+#footer span {
+    float: right;
+    font-size:12px;
+}
+#footer a {
+    text-decoration: none;
+    color: #000000;
+    font-size:12px;
+}
+#footer a:hover {
+    color: red;
+}
+
+.list {
+    width: 100%;
+}
+
+    .list td {
+        text-align: center;
+        font-size: 12px;
+        height: 30px;
+        line-height: 30px;
+        background-color: #f6f5f3;
+    }
+
+    .list th {
+        height: 40px;
+        line-height: 40px;
+        background-color: bisque;
+        font-size: 14px;
+    }
+
+.img_order {
+    width: 70px;
+    height: 50px;
+}
+
+.person_content {
+    padding: 10px;
+    background-color: bisque;
+}
+
+    .person_content h2 {
+        margin: 10px 0px;
+        font-family: "Î¢ÈíÑÅºÚ";
+    }
+
+.person_form {
+    background-color: white;
+    padding: 20px;
+}
+
+.btn_select {
+    width: 50px;
+    height: 20px;
+}

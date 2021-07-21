@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section js{
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#content',
+            data: {
+                users: [],
+            },
+            created: function () {
+                this.getUser();
+            },
+            methods: {               
+                getUser: function () {
+                    axios.get('/Home/GetUser').then(res => {
+                        this.users = res.data;
+                    })
+                },               
+            },
+        });
+    </script>
+}
+<link href="~/css/person.css" rel="stylesheet" />
+
+<form action="" method="post">
+    <div id="content">
+
+        <div class="person_content">
+            <h2>个人信息</h2>
+            <div class="person_form">
+                <div class="left">
+                    <div class="row">
+                        <span class="title">真实姓名：</span><span class="info"><input name="RealName" type="text" v-model="users[0].realName"  id="ContentPlaceHolder1_txtRealName" class="input" /><span data-val-controltovalidate="ContentPlaceHolder1_txtRealName" data-val-errormessage="请输入真实姓名！" data-val-validationGroup="info" id="ContentPlaceHolder1_RequiredFieldValidator1" class="error_msg" data-val="true" data-val-evaluationfunction="RequiredFieldValidatorEvaluateIsValid" data-val-initialvalue="" style="visibility:hidden;">请输入真实姓名！</span></span>
+                    </div>
+                    <div class="row">
+                        <span class="title">性别：</span><span class="info">
+                            <table id="ContentPlaceHolder1_rlSex">
+                                <tr>
+                                    <td>@Html.RadioButton("Sex", "男")<label for="ContentPlaceHolder1_rlSex_0">男</label></td>
+                                    <td>@Html.RadioButton("Sex", "女")<label for="ContentPlaceHolder1_rlSex_1">女</label></td>
+                                </tr>
+                            </table>
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span class="title">联系方式：</span><span class="info"><input name="Phone" type="text" v-model="users[0].phone" id="ContentPlaceHolder1_txtPhone" class="input" /><span data-val-controltovalidate="ContentPlaceHolder1_txtPhone" data-val-errormessage="请输入联系方式！" data-val-validationGroup="info" id="ContentPlaceHolder1_RequiredFieldValidator2" class="error_msg" data-val="true" data-val-evaluationfunction="RequiredFieldValidatorEvaluateIsValid" data-val-initialvalue="" style="visibility:hidden;">请输入联系方式！</span></span>
+                    </div>
+                    <div class="row">
+                        <span class="title">详细地址：</span><span class="info"><input name="Address" type="text" v-model="users[0].address" id="ContentPlaceHolder1_txtAddress" class="input" /><span data-val-controltovalidate="ContentPlaceHolder1_txtAddress" data-val-errormessage="请输入详细地址！" data-val-validationGroup="info" id="ContentPlaceHolder1_RequiredFieldValidator3" class="error_msg" data-val="true" data-val-evaluationfunction="RequiredFieldValidatorEvaluateIsValid" data-val-initialvalue="" style="visibility:hidden;">请输入详细地址！</span></span>
+                    </div>
+                    <div class="row_btn">
+                        <input type="submit" name="ctl00$ContentPlaceHolder1$btnUpdate" value="保存" id="ContentPlaceHolder1_btnUpdate" class="btn_select"/>
+                    </div>
+                </div>
+                <div class="right">
+                    <img src="~/images/person.bmp" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>

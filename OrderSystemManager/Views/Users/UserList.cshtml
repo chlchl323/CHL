@@ -1,0 +1,148 @@
+﻿
+<style>
+    th{
+        text-align:center;
+    }
+</style>
+<div id="right">
+    <div id="position">
+        您当前的位置：<span id="SiteMapPath1" class="nav"><a href="#SiteMapPath1_SkipLink" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">跳过导航链接</a><span><a>后台管理页面</a></span><span> &gt; </span><span><a>用户管理</a></span><span> &gt; </span><span>用户查询</span><a id="SiteMapPath1_SkipLink"></a></span>
+    </div>
+    <div id="content">
+
+        <div class="condition">
+            用户名：<input name="txtUserName" type="text" id="ContentPlaceHolder1_txtUserName" />
+            <input type="button" v-on:click="onSelect" style="margin-top:10px;height:25px;line-height:25px;" name="ctl00$ContentPlaceHolder1$btnSelect" value="查询" id="ContentPlaceHolder1_btnSelect" class="btn_select" />
+        </div>
+        <div class="data">
+
+            <table class="list">
+                <tr>
+                    <th>序号</th>
+                    <th>用户名</th>
+                    <th>用户类型</th>
+                    <th>真实姓名</th>
+                    <th>性别</th>
+                    <th>操作</th>
+                </tr>
+
+                <tr v-for="item,index in showList" :key="item.userId">
+                    <td>{{nowPageNum+index+1}}</td>
+                    <td>{{item.userName}}</td>
+                    <td>{{item.userType.userTypeName}}</td>
+                    <td>{{item.realName}}</td>
+                    <td>{{item.sex}}</td>
+                    <td>
+                        <input v-on:click="delUser(item.userId)" type="image" name="ImageButton1" id="ContentPlaceHolder1_Repeater1_ImageButton1_0" title="删除" src="../Content/images/del.jpg" />
+                        <input v-on:click="detailUser(item.userId)" type="image" name="ImageButton3" id="ContentPlaceHolder1_Repeater1_ImageButton3_0" title="详情" src="../Content/images/detail.jpg" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+        <div class="page">
+
+            <!-- AspNetPager 7.4.5 Copyright:2003-2013 Webdiyer (www.webdiyer.com) -->
+            <div id="ContentPlaceHolder1_AspNetPager1">
+                <a v-on:click="pageNumSub" id="prev" class="pre_next_nums_btn" href="javascript:avoid()" disabled="disabled" style="margin-right:5px;">上一页</a>
+                @*<span class="current_btn" style="margin-right:5px;">1</span>*@
+                <a v-for="count in pageCount" :class="{'pre_next_nums_btn':true,'current_btn':pageNum == count}" v-on:click="setPageNum(count)" href="javascript:__doPostBack()" style="margin-right:5px;">{{count}}</a>
+                <a v-on:click="pageNumAdd" id="next" class="pre_next_nums_btn" href="javascript:avoid()" style="margin-right:5px;">下一页</a>
+            </div>
+            <!-- AspNetPager 7.4.5 Copyright:2003-2013 Webdiyer (www.webdiyer.com) -->
+
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function avoid (){}
+        var vm = new Vue({
+            el: "#right",
+            data: {
+                userList: [],
+                pageNum: 1,
+                userName:""
+            },
+            created: function () {
+                this.loadData();
+            },
+            methods: {
+                delUser: function (id) {
+                    if (confirm('是否删除？')) {
+                        axios.post("/Users/Delete/" + id).then(res => {
+                            if (res.data == "ok") this.loadData();
+                            else alert('删除失败！');
+                        });
+                    }
+                },
+                detailUser: function (id) {
+                    window.location.href = "/Users/UserDetail/" + id;
+                },
+                loadData: function () {
+                    var _this = this;
+                    axios.get("/Users/GetUserList").then(res => {
+                        this.userList = res.data;
+                        var list = [];
+                        $.each(this.userList, function (index, item) {
+                            if (item.userName.indexOf(_this.userName) >= 0) {
+                                list.push(item);
+                            }
+                        })
+                        this.userList = list;
+                        this.isDisabled();
+                    });
+                },
+                pageNumAdd: function () {
+                    this.pageNum++;
+                    this.isDisabled();
+                },
+                pageNumSub: function () {
+                    this.pageNum--;
+                    this.isDisabled();
+                },
+                setPageNum: function (num) {
+                    this.pageNum = num;
+                    this.isDisabled();
+                },
+                isDisabled: function () {
+                    if (this.pageNum >= this.pageCount) {
+                        $("#next").attr("disabled", "disabled");
+                    }
+                    if (this.pageNum < this.pageCount) {
+                        $("#next").attr("disabled", false);
+                    }
+                    if (this.pageNum > 1) {
+                        $("#prev").attr("disabled", false);
+                    }
+                    if (this.pageNum <= 1) {
+                        $("#prev").attr("disabled", "disabled");
+                    }
+                },
+                onSelect: function () {
+                    this.userName = $("#ContentPlaceHolder1_txtUserName").val();
+                    this.loadData();
+                }
+            },
+            computed: {
+                showList: function () {
+                    var tempList = [];
+                    for (var j = 0, i = (this.pageNum - 1) * 5; i < ((this.pageNum - 1) * 5 + 5) && i < this.userList.length; i++, j++) {
+                        tempList[j] = this.userList[i];
+                    }
+                    return tempList;
+                },
+                pageCount: function () {
+                    return Math.ceil(this.userList.length / 5);
+                },
+                nowPageNum: function () {
+                    return (this.pageNum - 1) * 5;
+                }
+            }
+        })
+    </script>
+}

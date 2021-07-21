@@ -1,0 +1,104 @@
+﻿
+
+<div id="right">
+    <div id="app">
+        <div id="position">
+            您当前的位置：<span id="SiteMapPath1" class="nav"><a href="#SiteMapPath1_SkipLink" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">跳过导航链接</a><span><a>后台管理页面</a></span><span> &gt; </span><span><a>菜品管理</a></span><span> &gt; </span><span><a href="/Foods/FoodList">菜品查询</a></span><span> &gt; </span><span>修改菜品信息</span><a id="SiteMapPath1_SkipLink"></a></span>
+        </div>
+        <div id="content" style="margin-top:20px;">
+
+            <div>
+                <div class="row">
+                    <span class="title">菜品名称：</span><span class="info"><input style="height:30px;" name="FoodName" type="text" value="@Model.FoodName" id="txtFoodName" /><span id="foodNameMsg" style="color:red;"></span></span>
+                </div>
+                <div class="row">
+                    <input type="hidden" id="hidTypeId" value="@Model.FoodTypeId" />
+                    <input type="hidden" id="foodId" value="@Model.FoodId" />
+                    <span class="title">菜品类型：</span><span class="info">
+                        <select name="ddlFoodType" id="ContentPlaceHolder1_ddlFoodType" value="@Model.FoodTypeId">
+                            <option selected="selected" value="1">主食</option>
+                            <option value="2">热菜系列</option>
+                            <option value="3">经典凉拌</option>
+                            <option value="4">海鲜盛宴</option>
+                            <option value="5">传统烧烤</option>
+                            <option value="6">餐后甜点</option>
+
+                        </select>
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="title">单价：</span><span class="info"><input style="height:30px;" name="txtPrice" type="number" value="@Model.Price" id="ContentPlaceHolder1_txtPrice" /><span id="PriceMsg" style="color:red;"></span></span>
+                </div>
+                <div class="row">
+                    <span class="title pic">图片：</span>
+                    <span class="info pic">
+                        <input style="height:30px;line-height:30px;" type="file" name="uploadPic" id="ContentPlaceHolder1_uploadPic" />
+                        <input type="button" v-on:click="upLoad()" name="btnUpload" value="上传" id="ContentPlaceHolder1_btnUpload" style="margin-top:10px;height:25px;line-height:25px;" class="btn_select" />
+                        <img id="ContentPlaceHolder1_imgFoodPic" class="img_food" src="/@Model.PicUrl" />
+                        <input type="hidden" id="hidImage" value="@Model.PicUrl" />
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="title multiline">备注：</span><span class="info multiline">
+                        <textarea name="txtDesc" rows="2" cols="20" id="ContentPlaceHolder1_txtDesc" class="input_multiline" vlue="@Model.Desc">@Model.Desc</textarea>
+                    </span>
+                </div>
+                <div class="row_btn">
+                    <input type="button" style="margin-top:10px;height:25px;line-height:25px;" name="btnUpdate" value="保存" v-on:click="onSubmit()" id="ContentPlaceHolder1_btnUpdate" class="btn_select" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $("#ContentPlaceHolder1_ddlFoodType").val($("#hidTypeId").val());
+        })
+
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                isUpload: false
+            },
+            methods: {
+                onSubmit: function () {
+                    var food = {
+                        FoodId: parseInt($("#foodId").val()),
+                        FoodName: $("#txtFoodName").val(),
+                        FoodTypeId: parseInt($("#ContentPlaceHolder1_ddlFoodType").val()),
+                        Price: parseFloat($("#ContentPlaceHolder1_txtPrice").val()),
+                        PicUrl: $("#ContentPlaceHolder1_imgFoodPic").attr("src").substring(1),
+                        Desc: $("#ContentPlaceHolder1_txtDesc").val()
+                    };
+                    if (food.FoodName == "") {
+                        $("#foodNameMsg").html("菜品名称不能为空！");
+                        return;
+                    } else $("#foodNameMsg").html("");
+                    if (isNaN(food.Price)) {
+                        $("#PriceMsg").html("菜品单价不能为空！");
+                        return;
+                    } else $("#PriceMsg").html("");
+                    axios.post("/Foods/FoodEdit", JSON.stringify(food)).then(res => { if (res.data == "ok") window.location.href = "/Foods/FoodList" });
+                },
+                upLoad: function () {
+                    var formData = new FormData();
+                    formData.append($("#hidImage").val(), $("#ContentPlaceHolder1_uploadPic")[0].files[0]);
+                    console.log(formData.get($("#hidImage").val()));
+                    axios.post("/Foods/FileUpload", formData, { headers: { "Content-Type": "multipart/form-data" } }).then(res => {
+                        if (res.data == "noFile") {
+                            alert("请选择需要上传的图片文件！");
+                        } else {
+                            $("#ContentPlaceHolder1_imgFoodPic").attr("src", "/"+res.data);
+                        }
+                    })
+                },
+                handleFileUpload: function () {
+                    this.file = this.$refs.file.files[0];
+                }
+            }
+        })
+    </script>
+}

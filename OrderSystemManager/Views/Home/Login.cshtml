@@ -1,0 +1,85 @@
+﻿@{ 
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+
+    </title>
+    <link type="text/css" rel="stylesheet" href="/Content/css/login.css" />
+    <script src="~/Scripts/jquery-1.11.0.min.js"></script>
+    <script src="~/Scripts/vue.min.js"></script>
+    <script src="~/Scripts/axios.min.js"></script>
+    <script src="/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+</head>
+<body>
+    <form method="post" action="/Home/Login" onsubmit="javascript:return WebForm_OnSubmit();" id="form1">
+
+        <div id="container">
+            <div id="top">
+                邻家小厨后台管理系统
+            </div>
+            <div id="login">
+                <div class="title">邻家小厨后台管理系统登录</div>
+                <div class="row_input">
+                    <span class="row_title">用户名：</span>@*<input name="UserName" type="text" id="UserName" class="input" />*@
+                    @Html.TextBox("UserName", null, new { @class = "input", @id = "UserName" })
+                    <span id="UserNameMsg" style="color:red;"></span>
+                </div>
+                <div class="row_input">
+                    <span class="row_title">密码：</span>@*<input name="UserPwd" type="password" id="UserPwd" class="input" />*@
+                    @Html.Password("Password", null, new { @class = "input", @id = "UserPwd" })
+                    <span id="UserPwdMsg" style="color:red;"></span>
+                    <span style="color:red;">@ViewBag.LoginMsg</span>
+                </div>
+                <div class="row_input">
+                    <span class="row_title">验证码：</span>@*<input name="CheckCode" type="text" id="CheckCode" class="input_check" />*@
+                    @Html.TextBox("CheckCode", null, new { @class = "input_check", @id = "CheckCode" })
+                    <a id="lblChange" class="a" href="javascript:__doPostBack()">看不清</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span id="CheckCodeMsg" style="color:red;"></span>
+                    <span style="color:red;">@ViewBag.ChkCodeMsg</span>
+                </div>
+                <div class="row_input">
+                    <span class="row_title">&nbsp;</span><img src='/Home/VerifyCode' id="CodeImage" width='150px' height='60px' class='check_code' />
+                </div>
+                <div class="row_btn">
+                    <input type="submit" style="cursor:pointer;" name="btnLogin" value="" id="btnLogin" class="btn" />
+                </div>
+            </div>
+            <div id="bottom">
+                版权所有：邻家小厨
+            </div>
+        </div>
+    </form>
+    <script>
+        function WebForm_OnSubmit() {
+            var $UserName = $("#UserName").val();
+            var $UserPwd = $("#UserPwd").val();
+            var $CheckCode = $("#CheckCode").val();
+            if ($UserName == "") {
+                $("#UserNameMsg").html("请输入用户名！");
+                return false;
+            } else $("#UserNameMsg").html("");
+            if ($UserPwd == "") {
+                $("#UserPwdMsg").html("请输入密码！");
+                return false;
+            } else $("#UserPwdMsg").html("");
+            if ($CheckCode == "") {
+                $("#CheckCodeMsg").html("请输入验证码！");
+                return false;
+            } else $("#CheckCodeMsg").html("");
+            return true;
+        }
+
+        function __doPostBack() {
+            document.getElementById("CodeImage").src = "/Home/VerifyCode?id=" + Math.random();
+            console.log(document.getElementById("CodeImage").id);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+ Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section js{
+    <script type="text/javascript">
+        //定义全局变量
+        var currentIndex = 0;//当前展示图片索引
+        var preIndex = 0;//之前展示图片索引
+        var timeId;//计时器调用ID
+        //启动自动播放
+        function start() {
+            timeId = window.setInterval(
+                function () {
+                    showImage();
+                }, 2000);
+        }
+        //停止自动播放
+        function stop() {
+            window.clearInterval(timeId);
+        }
+        //用于实现显示当前图片
+        function showImage(index) {
+            //保存之前图片索引
+            preIndex = currentIndex;
+            //计算当前需要显示的图片索引
+            if (arguments.length > 0) {
+                //若传递参数，则显示指定图片
+                currentIndex = index;
+            } else {
+                //若不传递参数，则顺序显示图片
+                currentIndex = currentIndex < 3 ? ++currentIndex : 0;
+            }
+            //计算当前需要显示的图片的坐标
+            //left=（-1）*图片宽度*当前图片索引
+            var left = (-1) * 1000 * currentIndex;
+            //显示当前图片
+            $("#imgarea").stop(true).animate({ "left": left }, 1000);
+            //去掉之前小圆点样式
+            $("#imgID li").eq(preIndex).removeClass("current");
+            //设置当前小圆点样式
+            $("#imgID li").eq(currentIndex).addClass("current");
+        }
+        $(function () {
+            //鼠标移入停止，鼠标移除继续
+            $("#main").hover(
+                function () { stop(); },
+                function () { start(); }
+            );
+            //点击小圆点切换
+            $("#imgID li").each(function (index) {
+                $(this).mouseover(function () {
+                    showImage(index);
+                });
+            });
+            //启动自动播放
+            start();
+        });
+    </script>
+}
+<form action="/Home/Index" method="post">
+    <div id="content">
+        <div id="banner">
+            <div id="main">
+                <ul id="imgarea">
+                    <li><a href="#"><img src="~/images/img1.jpg" /></a></li>
+                    <li><a href="#"><img src="~/images/img2.jpg" /></a></li>
+                    <li><a href="#"><img src="~/images/img3.jpg" /></a></li>
+                    <li><a href="#"><img src="~/images/img4.jpg" /></a></li>
+                </ul>
+                <ul id="imgID">
+                    <li class="current"></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+        <div id="bottom">
+            <div><img src="~/images/home1.jpg" /></div>
+            <div><img src="~/images/home2.jpg" /></div>
+            <div><img src="~/images/home3.jpg" /></div>
+            <div><img src="~/images/home4.jpg" /></div>
+        </div>
+    </div>
+</form>
+
+

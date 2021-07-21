@@ -1,0 +1,69 @@
+﻿* {
+    padding: 0px;
+    margin: 0px;
+}
+
+
+ul {
+    list-style: none;
+}
+
+#banner {
+    width:100%;
+    height:400px;
+}
+
+#bottom{
+    overflow:hidden;
+}
+#bottom div {
+    float:left;
+}
+
+#main {
+    width: 1000px;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+
+#imgarea {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 4000px;
+    height: 400px;
+}
+
+#imgarea li {
+    float: left;
+    width: 1000px;
+    height: 400px;
+}
+
+#imgID {
+    display: block;
+    width: 97px;
+    height: 15px;
+    padding-top: 5px;
+    position: absolute;
+    top: 350px;
+    left: 450px;
+    background-color: white;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.4); /*设置背景透明*/
+}
+
+#imgID li {
+    float: left;
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    list-style-type: none;
+    border-radius: 10px;
+    margin: 0px 7px;
+}
+
+#imgID li.current {
+    background-color: red;
+}

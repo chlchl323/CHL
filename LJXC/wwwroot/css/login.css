@@ -1,0 +1,94 @@
+﻿*{
+    padding:0px;
+    margin:0px;
+}
+body {
+    font-family: "微软雅黑";
+}
+#container {
+    width: 1000px;
+    margin: 0 auto;
+}
+#top{
+    height:100px;
+    line-height:100px;
+    background-color:dimgray;
+    color:white;
+    font-size:32px;
+    padding-left:20px;
+}
+#login{
+    width:500px;
+    border:1px solid lightgray;
+    margin:0 auto;
+    margin-top:50px;
+}
+#login .title {
+    height: 42px;
+    line-height: 42px;
+    background-image: url('../images/login_title.png');
+    background-repeat:repeat-x;
+    color:white;
+    padding-left:20px;
+    margin-bottom:20px;
+}
+#login .row_input{
+    height:50px;
+    line-height:50px;
+    font-size:12px;
+    font-family:"微软雅黑";
+}
+#login span.row_title{
+    float:left;
+    text-align:right;
+    width:150px;
+}
+.input{
+    border:1px solid black;
+    height:30px;
+    float:left;
+    width:200px;
+    margin-top:10px;
+}
+.input_check {
+    width: 80px;
+    border: 1px solid black;
+    height: 30px;
+    float: left;
+    margin-top: 10px;
+}
+.btn {
+    height: 40px;
+    width: 80px;
+    background-image: url('../images/login_btn.png');
+    border:0px;
+}
+#login .row_btn {
+    height: 50px;
+    line-height: 50px;
+    text-align:center;
+}
+#bottom{
+    width:800px;
+    margin:0 auto;
+    margin-top:50px;
+    padding-top:20px;
+    text-align:center;
+    font-size:12px;
+    border-top:1px dashed gray;
+}
+.error_msg {
+    font-size: 12px;
+    color: red;
+    float:left;
+    margin-left:5px;
+}
+.check_code{
+    float:left;
+}
+.a {
+    float: left;
+    text-decoration: none;
+    font-size: 12px;
+    font-family: "微软雅黑";
+}

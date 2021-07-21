@@ -1,0 +1,105 @@
+﻿@using Microsoft.AspNetCore.Http;
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/css/master.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/food.css" rel="stylesheet" />
+    <link href="~/css/detail.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="~/css/index.css" />
+    <script src="~/js/jquery-1.11.0.min.js"></script>
+    <script src="~/js/jquery-3.3.1.js"></script>
+    <script src="~/js/vue.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <style>
+        .goods1 {
+            background-color: #5A362D;
+        }
+
+        .goods2 {
+            background-color: #9D262C;
+        }
+
+        .goods3 {
+            background-color: #C7810D;
+        }
+
+        .goods4 {
+            background-color: #680035;
+        }
+
+        .goods5 {
+            background-color: #275A87;
+        }
+
+        .goods6 {
+            background-color: #679E3D;
+        }
+
+    </style>
+
+</head>
+<body>
+    <form method="post" action="/Home/Index" id="form1">
+        <div id="header">
+            <div class="logo">
+                <a href="Index.aspx"><img src="~/images/index_logo.png" alt="" /></a>
+            </div>
+            @if (Context.Session.GetString("UserName") == null)
+            {
+                <div id="divLoginNo">
+                    <div class="login">
+                        用户名：<input name="UserName" type="text" id="txtUserName" class="textbox" />
+                        密码：<input name="Password" type="password" id="txtPassword" class="textbox" />
+                        <input type="submit" name="ctl00$btnLogin" value="登录" id="btnLogin" class="button" />
+                        <a style="display:inline-block;border-radius:2px;width:30px;height:18px;padding-top:2px" href="/Home/Reg" name="ctl00$btnReg" id="btnReg" class="button" onclick="">注册</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div id="divLoginYes">
+                    <div class="loginUser">
+                        <div>
+                            你好!
+                            <span id="lblUserName">
+                                @Context.Session.GetString("UserName")
+                                @Context.Session.GetString("Sex")
+                            </span>
+                        </div>
+                        <div>
+                            <a id="lbtnEsc" href="/Home/Logout">退出</a>
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                            <a href="/Home/Detail">我的账户信息</a>
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                            <a href="/Home/ChangePassword">修改密码</a>
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                            <a href="/Home/PersonOrderList">订单查询</a>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="nav">
+                <div class="check"><a href="/Home/Index">浏览首页</a></div>
+                <div class="check"><a href="/Foods/Food">开始订餐</a></div>
+            </div>
+        </div>
+
+    </form>
+    <div id="container">
+        @RenderBody()
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <a href="#">网站条款</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="#">订餐须知</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="#">隐私条款</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="Admin/AdminLogin.aspx">网站后台</a>
+        <span>&copy; 2022 邻家小厨 版权所有</span>
+    </div>
+   
+    @RenderSection("js", false)
+</body>
+</html>

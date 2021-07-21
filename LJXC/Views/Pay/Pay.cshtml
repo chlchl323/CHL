@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewData["Title"] = "Pay";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section js{
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#content',
+            data: {
+                sum:[],
+            },
+            created: function () {
+                this.getSum();
+            },
+            methods: {
+                changeOrderState: function () {
+                    axios.get('/Pay/ChangeOrderState').then(res => {
+                        
+                    })
+                },
+                getSum: function () {
+                    axios.get('/Orders/GetPaySum').then(res => {
+                        this.sum = res.data;
+                    })
+                },
+            },
+        });
+    </script>
+}
+<style type="text/css">
+    .payment {
+        width: 400px;
+        height: 250px;
+        margin: 50px auto 30px auto;
+        background-color: #FFEFBC;
+        border: #FFD555 solid 1px;
+        padding: 10px;
+    }
+
+        .payment h3 {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .payment div {
+            width: 130px;
+            margin: 100px auto 0px auto;
+        }
+
+    .btnPay {
+        width: 130px;
+        height: 30px;
+        font-size: 14px;
+        margin-right: 10px;
+        border-radius: 5px;
+        border: 0px;
+        font-weight: bold;
+        color: #ffffff;
+        background-color: #222222;
+    }
+
+        .btnPay:hover {
+            background-color: #000000;
+        }
+</style>
+<form action="/Home/Index" method="get">
+    <div id="content">
+
+        <div class="person_content">
+            <h2>模拟支付平台</h2>
+            <div class="person_form">
+                <h3>应支付：￥{{sum}}</h3>
+                <div class="payment">
+                    <h3>单击确认支付，则模拟支付成功！</h3>
+                    <div><input type="submit" name="ctl00$ContentPlaceHolder1$btnPayment" value="确认支付" id="ContentPlaceHolder1_btnPayment" class="btnPay" @@click="changeOrderState()" /></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

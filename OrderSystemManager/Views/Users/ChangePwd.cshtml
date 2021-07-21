@@ -1,0 +1,60 @@
+﻿<form id="form" action="/Users/UpdatePwd" method="post">
+    <div id="right">
+        <div id="position">
+            您当前的位置：<span id="SiteMapPath1" class="nav"><a href="#SiteMapPath1_SkipLink" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">跳过导航链接</a><span><a>后台管理页面</a></span><span> &gt; </span><span><a>系统管理</a></span><span> &gt; </span><span>更新管理密码</span><a id="SiteMapPath1_SkipLink"></a></span>
+        </div>
+        <div id="content" style="margin-top:20px;">
+
+            <div>
+                <div class="row">
+                    <span class="title">原密码：</span><span class="info">
+                        <input style="height:30px;" name="txtOldPwd" type="password" id="txtOldPwd" /><span id="oldPwdMsg" class="error_msg"></span>
+                        <span class="error_msg">@TempData["PwdMsg"]</span>
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="title">新密码：</span><span class="info"><input style="height:30px;" name="txtNewPwd" type="password" id="txtNewPwd" /><span id="NewPwdMsg" class="error_msg"></span></span>
+                </div>
+                <div class="row">
+                    <span class="title">确认密码：</span><span class="info">
+                        <input style="height:30px;" name="txtReNewPwd" type="password" id="txtReNewPwd" /><span id="ReNewPwdMsg" class="error_msg"></span>
+                        <span id="compareErro" class="error_msg"></span>
+                    </span>
+                </div>
+                <div class="row_btn">
+                    <input style="height:25px;line-height:25px;" type="submit" name="btnUpdate" value="保存" id="ContentPlaceHolder1_btnUpdate" class="btn_select" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script>
+        $("#form").bind("submit", onSubmit);
+
+        function onSubmit() {
+            var oldPwd = $("#txtOldPwd").val();
+            var NewPwd = $("#txtNewPwd").val();
+            var ReNewPwd = $("#txtReNewPwd").val();
+            if (oldPwd == "") {
+                $("#oldPwdMsg").html("旧密码不能为空！");
+                return false;
+            } else $("#oldPwdMsg").html("");
+            if (NewPwd == "") {
+                $("#NewPwdMsg").html("新密码不能为空！");
+                return false;
+            } else $("#NewPwdMsg").html("");
+            if (ReNewPwd == "") {
+                $("#ReNewPwdMsg").html("确认密码不能为空！");
+                return false;
+            } else $("#ReNewPwdMsg").html("");
+            if (NewPwd != ReNewPwd) {
+                $("#compareErro").html("两次密码输入不一致");
+                return false;
+            } else $("#compareErro").html("");
+            return true;
+        }
+    </script>
+}

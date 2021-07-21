@@ -1,0 +1,32 @@
+﻿<div id="right">
+    <div id="position">
+        您当前的位置：<span id="SiteMapPath1" class="nav"><a href="#SiteMapPath1_SkipLink" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">跳过导航链接</a><span><a>后台管理页面</a></span><span> &gt; </span><span><a>菜品管理</a></span><span> &gt; </span><span><a href="/Foods/FoodList">菜品查询</a></span><span> &gt; </span><span>查看菜品详情</span><a id="SiteMapPath1_SkipLink"></a></span>
+    </div>
+    <div id="content" style="margin-top:20px;">
+
+        <div>
+            <div class="row">
+                <span class="title">菜品名称：</span><span class="info">@Model.FoodName</span>
+            </div>
+            <div class="row">
+                <span class="title">菜品类型：</span><span class="info">@Model.FoodType.FoodTypeName</span>
+            </div>
+            <div class="row">
+                <span class="title">单价：</span><span class="info">@string.Format("{0:c}",Model.Price)</span>
+            </div>
+            <div class="row">
+                <span class="title pic">图片：</span><span class="info pic"><img src="/@Model.PicUrl" class="img_food" /></span>
+            </div>
+            <div class="row">
+                <span class="title">订购次数：</span><span class="info">@Model.SalesVolume</span>
+            </div>
+            <div class="row">
+                <span class="title">上市时间：</span><span class="info">@Model.AddDate</span>
+            </div>
+            <div class="row">
+                <span class="title">备注：</span><span class="info">@Model.Desc</span>
+            </div>
+        </div>
+
+    </div>
+</div>

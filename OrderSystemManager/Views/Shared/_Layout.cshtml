@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OrderSystemManager</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="/Content/css/detail.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/antd.min.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="/Content/css/manager.css" />
+    <link type="text/css" rel="stylesheet" href="/Content/css/detail.css" />
+    <script src="/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Scripts/axios.min.js"></script>
+    <style type="text/css">
+        .TreeView1_0 {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+
+
+    <div id="container">
+        <div id="top">
+            <ul>
+                <li class="top_left">邻家小厨后台管理系统</li>
+                <li class="top_right"><a id="btnLogout" href="/Home/Exit">退出</a></li>
+                <li class="top_right">|</li>
+                <li class="top_right"><a href="../Index.aspx">首页</a></li>
+            </ul>
+        </div>
+        <div id="middle">
+            <div id="left">
+                <a href="#TreeView1_SkipLink" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">跳过导航链接。</a>
+                <div id="TreeView1" class="tree">
+
+                    <a-tree v-bind="attrs" @@select="selected"></a-tree>
+
+                </div><a id="TreeView1_SkipLink"></a>
+
+            </div>
+            @RenderBody()
+        </div>
+        <div id="bottom">版权所有：邻家小厨 </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/Scripts/vue.min.js"></script>
+    <script src="~/Scripts/antd.min.js"></script>
+    <script>
+        var vm = new Vue({
+            el: "#left",
+            data: {
+                attrs: {
+                    treeData: [{
+                        title: "后台管理页面",
+                        key: "0",
+                        children: [{
+                            title: "菜品管理",
+                            key: "1",
+                            children: [{
+                                title: "菜品查询",
+                                key: "1-1",
+                                on: { click: () => { } }
+                            },
+                            {
+                                title: "添加菜品",
+                                key: "1-2",
+                            }
+                            ]
+                        },
+                        {
+                            title: "用户管理",
+                            key: "2",
+                            children: [{
+                                title: "用户查询",
+                                key: "2-1"
+                            }
+                            ]
+                        },
+                        {
+                            title: "订单管理",
+                            key: "3",
+                            children: [{
+                                title: "未付款",
+                                key: "3-1"
+                            },
+                            {
+                                title: "已付款",
+                                key: "3-2"
+                            },
+                            {
+                                title: "已接单",
+                                key: "3-3"
+                            },
+                            {
+                                title: "派送中",
+                                key: "3-4"
+                            },
+                            {
+                                title: "已完成",
+                                key: "3-5"
+                            }
+                            ]
+                        },
+                        {
+                            title: "系统管理",
+                            key: "4",
+                            children: [{
+                                title: "更新管理密码",
+                                key: "4-1"
+                            }
+                            ]
+                        }
+                        ]
+                    }],
+                    defaultExpandedKeys: ["0", "1","2","3","4"],
+                    defaultSelectedKeys: []
+                },
+
+            },
+            methods: {
+                selected: function (selectedKeys, e) {
+                    var _this = this;
+                    e.selected = true;
+                    if (selectedKeys == "1-1") { window.location.href = "/Foods/FoodList"; };
+                    if (selectedKeys == "1-2") { window.location.href = "/Foods/FoodAdd"; };
+                    if (selectedKeys == "2-1")
+                        window.location.href = "/Users/UserList";
+                    if (selectedKeys == "3-1")
+                        window.location.href = "/Orders/OrderList/1";
+                    if (selectedKeys == "3-2")
+                        window.location.href = "/Orders/OrderList/2";
+                    if (selectedKeys == "3-3")
+                        window.location.href = "/Orders/OrderList/3";
+                    if (selectedKeys == "3-4")
+                        window.location.href = "/Orders/OrderList/4";
+                    if (selectedKeys == "3-5")
+                        window.location.href = "/Orders/OrderList/5";
+                    if (selectedKeys == "4-1")
+                        window.location.href = "/Users/ChangePwd";
+                },
+            },
+            computed: {
+                //dekeys: function () {
+                //    var _this = this;
+                //    axios.get("/Foods/GetTreeIndex").then(res => {
+                //        console.log(res.data);
+                //        if (res.data == "1-1" || res.data == "1-2") {
+                //            _this.attrs.defaultExpandedKeys = ["0", "1"];
+                //        }
+                //        if (res.data == "2-1") {
+                //            _this.attrs.defaultExpandedKeys = ["0", "2"];
+                //        }
+                //        if (res.data == "3-1" || res.data == "3-2" || res.data == "3-3" || res.data == "3-4" || res.data == "3-5") {
+                //            _this.attrs.defaultExpandedKeys = ["0", "3"];
+                //        }
+                //        if (res.data == "4-1") {
+                //            _this.attrs.defaultExpandedKeys = ["0", "4"];
+                //        }
+                //        //_this.attrs.defaultSelectedKeys = [res.data];
+                //        _this.result = res.data;
+                //        _this.defaultSelectedKeys = [res.data];
+                //        console.log(_this.result);
+                //    })
+                //}
+            }
+        })
+
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

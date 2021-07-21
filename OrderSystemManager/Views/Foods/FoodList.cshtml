@@ -1,0 +1,148 @@
+﻿<div id="right">
+    <div id="position">
+        您当前的位置：<span id="SiteMapPath1" class="nav"><a href="#SiteMapPath1_SkipLink" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">跳过导航链接</a><span><a>后台管理页面</a></span><span> &gt; </span><span><a>菜品管理</a></span><span> &gt; </span><span>菜品查询</span><a id="SiteMapPath1_SkipLink"></a></span>
+    </div>
+    <div id="content">
+
+        <div class="condition">
+            菜品类型：<select name="ctl00$ContentPlaceHolder1$ddlFoodType" id="ContentPlaceHolder1_ddlFoodType" v-model="foodTypeId">
+                <option selected="selected" value="0">全部</option>
+                <option value="1">主食</option>
+                <option value="2">热菜系列</option>
+                <option value="3">经典凉拌</option>
+                <option value="4">海鲜盛宴</option>
+                <option value="5">传统烧烤</option>
+                <option value="6">餐后甜点</option>
+
+            </select>
+            <input type="button" style="margin-top:10px;height:25px;line-height:25px;" v-on:click="selectType()" name="ctl00$ContentPlaceHolder1$btnSelect" value="查询" id="ContentPlaceHolder1_btnSelect" class="btn_select" />
+        </div>
+        <div class="data">
+
+            <table class="list">
+                <tr>
+                    <th>序号</th>
+                    <th>菜品名称</th>
+                    <th>菜品类型</th>
+                    <th>菜品价格</th>
+                    <th>订购次数</th>
+                    <th>上市时间</th>
+                    <th>操作</th>
+                </tr>
+
+                <tr v-for="item,index in foodsList">
+                    <td>{{countNum+index+1}}</td>
+                    <td>{{item.foodName}}</td>
+                    <td>{{item.foodType.foodTypeName}}</td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.salesVolume}}</td>
+                    <td>{{item.addDate}}</td>
+                    <td>
+                        <input type="image" name="ImageButton1" id="ContentPlaceHolder1_Repeater1_ImageButton1_0" title="删除" src="/Content/images/del.jpg" v-on:click="delFood(item.foodId)" />
+                        <input type="image" name="ImageButton2" id="ContentPlaceHolder1_Repeater1_ImageButton2_0" title="编辑" src="/Content/images/edit.jpg" v-on:click="editFood(item.foodId)" />
+                        <input type="image" name="ImageButton3" id="ContentPlaceHolder1_Repeater1_ImageButton3_0" title="详情" src="/Content/images/detail.jpg" v-on:click="detailFood(item.foodId)" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+        <div class="page">
+
+            <!-- AspNetPager 7.4.5 Copyright:2003-2013 Webdiyer (www.webdiyer.com) -->
+            <div id="ContentPlaceHolder1_AspNetPager1">
+                <a id="prev" class="pre_next_nums_btn"  href="JavaScript:aa()" v-on:click="prevFoodList()" style="margin-right:5px;">上一页</a>
+
+                <a v-for="count in pageCount" :class="{pre_next_nums_btn:true,'current_btn':count==thisPage}" v-on:click="loadFoodList(count)" href="JavaScript:function()" style="margin-right:5px;">{{count}}</a>
+
+                @*<span class="current_btn" style="margin-right:5px;">1</span>*@
+                <a id="next" class="pre_next_nums_btn" href="JavaScript:aa()" v-on:click="nextFoodList()" style="margin-right:5px;">下一页</a>
+            </div>
+            <!-- AspNetPager 7.4.5 Copyright:2003-2013 Webdiyer (www.webdiyer.com) -->
+
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{ 
+    <script>
+        function aa() { }
+        var vm = new Vue({
+            el: "#right",
+            data: {
+                foodsList: [],
+                pageCount: 0,
+                thisPage: 1,
+                foodTypeId: 0
+            },
+            mounted: function () {
+                this.loadFoodList();
+            },
+            methods: {
+                loadFoodList: function (pageNum) {
+                    if (pageNum == undefined) {
+                        pageNum = 1;
+                    }
+                    this.thisPage = pageNum;
+                    axios.get("/Foods/GetFoodList?pageNum=" + pageNum + "&foodTypeId=" + this.foodTypeId).then(res => {
+                        this.foodsList = res.data.foodList;
+                        this.pageCount = res.data.pageCount;
+                        this.btnDisabled();
+                    });
+                },
+                nextFoodList: function () {
+                    this.thisPage++;
+                    console.log(this.pageCount);
+                    console.log(this.thisPage);
+                    this.btnDisabled();
+                    this.loadFoodList(this.thisPage);
+                },
+                prevFoodList: function () {
+                    this.thisPage--;
+                    console.log(this.pageCount);
+                    console.log(this.thisPage);
+                    this.btnDisabled();
+                    this.loadFoodList(this.thisPage);
+                },
+                btnDisabled: function () {
+                    if (this.thisPage >= this.pageCount) {
+                        $("#next").attr("disabled", "disabled");
+                    }
+                    if (this.thisPage <= 1) {
+                        $("#prev").attr("disabled", "disabled");
+                    }
+                    if (this.thisPage > 1) {
+                        $("#prev").attr("disabled", false);
+                    }
+                    if (this.thisPage < this.pageCount) {
+                        $("#next").attr("disabled", false);
+                    }
+                },
+                selectType: function () {
+                    this.loadFoodList();
+                },
+                delFood: function (id) {
+                    if (confirm('确定删除?')) {
+                        axios.post("/Foods/DelFood", "foodId=" + id).then(res => { if (res.data = "ok") this.loadFoodList(this.thisPage) });
+                    }
+                },
+                detailFood: function (id) {
+                    window.location.href = "/Foods/FoodDetail?foodId=" + id;
+                },
+                editFood: function (id) {
+                    window.location.href = "/Foods/FoodEdit?foodId=" + id;
+                }
+            },
+            computed: {
+                countNum: function () {
+                    if (this.thisPage == 0) {
+                        this.thisPage = 1;
+                    }
+                    return (this.thisPage - 1) * 5;
+                }
+            }
+        })
+    </script>
+}

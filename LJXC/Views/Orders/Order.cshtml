@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewData["Title"] = "Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section js{ 
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#person_content',
+            data: {
+                orderDetails: [],
+                orders: [],           
+                sum:[],
+            },
+            created: function () {
+                this.getOrderDetail();
+                this.getOrder();
+                this.getSum();
+            },
+            methods: {                
+                getOrderDetail: function () {
+                    axios.get('/Orders/GetOrderDetail').then(res => {
+                        this.orderDetails = res.data;
+                    })
+                },
+                getOrder: function () {
+                    axios.get('/Orders/GetOrder').then(res => {
+                        this.orders = res.data;
+                    })
+                },
+                add: function (foodid) {
+                    axios.get('/Orders/Add?foodid=' + foodid).then(res => {
+                        this.getSum();
+                        this.getOrderDetail();
+                    })
+                },
+                sub: function (foodid) {
+                    axios.get('/Orders/Sub?foodid=' + foodid).then(res => {
+                        this.getSum();
+                        this.getOrderDetail();
+                    })
+                },
+                getSum: function () {
+                    axios.get('/Orders/GetSum').then(res => {
+                        this.sum = res.data;
+                    })
+                },
+            },
+        });
+    </script>
+}
+<style type="text/css">
+    #user h4, #detail h4 {
+        margin: 10px 0px;
+    }
+
+    tr.total td {
+        text-align: right;
+    }
+
+    tr.total td span {
+        color: red;
+        font-weight: bold;
+        font-size: 18px;
+        margin-right: 10px;
+    }
+</style>
+<form action="/Orders/Order" method="post">
+    <div id="person_content">
+        <h2>复核并确认订单信息</h2>
+        <div class="person_form">
+            <div id="user">
+                <h4>收货人信息</h4>
+                <div class="row">
+                    <span class="title">收货人：</span>
+                    <span class="info">
+                        <input name="RealName" type="text" v-model="orders[0].realName" id="txtRealName" class="input" />
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="title">手机号码：</span>
+                    <span class="info">
+                        <input name="Phone" type="text" v-model="orders[0].phone" id="txtPhone" class="input" />
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="title">收货地址：</span>
+                    <span class="info">
+                        <input name="Address" type="text" v-model="orders[0].address" id="txtAddress" class="input_address" />
+                    </span>
+                </div>
+            </div>
+            <div id="detail">
+                <h4>订单详细信息</h4>
+                <table class="list">
+                    <tr>
+                        <th>序号</th>
+                        <th>菜品名称</th>
+                        <th>图片</th>
+                        <th>数量</th>
+                        <th>单价</th>
+                    </tr>
+                    <tr v-for="orderDetail,index in orderDetails">
+                        <td>{{index+1}}</td>
+                        <td>{{orderDetail.foodName}}</td>
+                        <td><img :src="'/'+orderDetail.picUrl" class="img_order" /></td>
+                        <td>
+                            <a id="ContentPlaceHolder1_Repeater1_LinkButton1_0" class="btnAdd" href="#" @@click="sub(orderDetail.foodId)">-</a>
+                            &nbsp;{{orderDetail.quatity}}&nbsp;
+                            <a id="ContentPlaceHolder1_Repeater1_LinkButton2_0" class="btnAdd" href="#" @@click="add(orderDetail.foodId)">+</a>
+                        </td>
+                        <td>￥{{orderDetail.unitPrice}}</td>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="5">总价:￥<span id="ContentPlaceHolder1_lblCartTotle">{{sum}}</span></td>
+                    </tr>
+                    <tr class="total">
+                        <td colspan="5"><input type="submit" name="ctl00$ContentPlaceHolder1$btnCreateOrder" value="立即下单" id="ContentPlaceHolder1_btnCreateOrder" class="btnPay" /></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>

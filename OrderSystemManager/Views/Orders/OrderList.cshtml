@@ -1,0 +1,139 @@
+﻿
+<style>
+    th {
+        text-align: center;
+    }
+</style>
+<div id="right">
+    <div id="position">
+        您当前的位置：<span id="SiteMapPath1" class="nav"><a href="#SiteMapPath1_SkipLink" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">跳过导航链接</a><span><a>后台管理页面</a></span><span> &gt; </span><span><a>订单管理</a></span><span> &gt; </span></span><a id="SiteMapPath1_SkipLink"></a>
+    </div>
+    <div id="content" style="margin-top:20px;">
+
+        <div class="data">
+
+            <table class="list">
+                <tr>
+                    <th>序号</th>
+                    <th>客户姓名</th>
+                    <th>下单时间</th>
+                    <th>订单总额</th>
+                    <th>订单状态</th>
+                    <th>操作</th>
+                </tr>
+
+                <tr v-for="item,index in showList" :key="item.orderId">
+                    <td>{{nowPageNum+index+1}}</td>
+                    <td>{{item.realName}}</td>
+                    <td>{{item.dateCreate}}</td>
+                    <td>{{item.totle}}</td>
+                    <td>{{stateName(item.orderState)}}</td>
+                    <td>
+                        <input v-on:click="detailOrder(item.orderId)" type="image" name="btnDetail" id="ContentPlaceHolder1_Repeater1_btnDetail_0" title="详情" src="/Content/images/detail.jpg" />
+                        <input v-if="item.orderState==2" v-on:click="setState(item.orderId,3)" type="image" name="btnAccept" id="ContentPlaceHolder1_Repeater1_btnAccept_0" title="接单" src="/Content/images/accept.jpg" />
+                        <input v-if="item.orderState==3" v-on:click="setState(item.orderId,4)" type="image" name="btnSend" id="ContentPlaceHolder1_Repeater1_btnSend_0" title="派送" src="/Content/images/send.jpg" />
+                    </td>
+                </tr>
+
+            </table>
+            <div style="width:100%;text-align:center;"><h4>{{dataNullMsg}}</h4></div>
+        </div>
+        <div class="page">
+
+            <!-- AspNetPager 7.4.5 Copyright:2003-2013 Webdiyer (www.webdiyer.com) -->
+            <div id="ContentPlaceHolder1_AspNetPager1">
+                <a v-on:click="pageNumSub" id="prev" class="pre_next_nums_btn" href="javascript:avoid()" disabled="disabled" style="margin-right:5px;">上一页</a>
+                <a v-for="count in pageCount" :class="{'pre_next_nums_btn':true,'current_btn':pageNum == count}" v-on:click="setPageNum(count)" href="javascript:__doPostBack()" style="margin-right:5px;">{{count}}</a>
+                <a v-on:click="pageNumAdd" id="next" class="pre_next_nums_btn" href="javascript:avoid()" style="margin-right:5px;">下一页</a>
+            </div>
+            <!-- AspNetPager 7.4.5 Copyright:2003-2013 Webdiyer (www.webdiyer.com) -->
+
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{ 
+    <script>
+        var vm = new Vue({
+            el: "#right",
+            data: {
+                orderList: [],
+                pageNum: 1
+            },
+            created: function () {
+                this.loadOrders();
+            },
+            methods: {
+                loadOrders: function () {
+                    axios.get("/Orders/GetOrderList").then(res => {
+                        this.orderList = res.data;
+                        this.isDisabled();
+                    })
+                },
+                pageNumAdd: function () {
+                    this.pageNum++;
+                    this.isDisabled();
+                },
+                pageNumSub: function () {
+                    this.pageNum--;
+                    this.isDisabled();
+                },
+                setPageNum: function (num) {
+                    this.pageNum = num;
+                    this.isDisabled();
+                },
+                isDisabled: function () {
+                    if (this.pageNum >= this.pageCount) {
+                        $("#next").attr("disabled", "disabled");
+                    }
+                    if (this.pageNum < this.pageCount) {
+                        $("#next").attr("disabled", false);
+                    }
+                    if (this.pageNum > 1) {
+                        $("#prev").attr("disabled", false);
+                    }
+                    if (this.pageNum <= 1) {
+                        $("#prev").attr("disabled", "disabled");
+                    }
+                },
+                detailOrder: function (id) {
+                    window.location.href = "/Orders/OrderDetail/" + id;
+                },
+                setState: function (id, stateNum) {
+                    if (confirm(stateNum == 3 ? "确认接单？" : "确认更改状态为派送中？")) {
+                        axios.post("/Orders/upState", "id=" + id + "&stateNum=" + stateNum).then(res => {
+                            if (res.data == "ok") {
+                                this.loadOrders();
+                            }
+                        })
+                    }
+                }
+            },
+            computed: {
+                showList: function () {
+                    var tempList = [];
+                    for (var j = 0, i = (this.pageNum - 1) * 5; i < ((this.pageNum - 1) * 5 + 5) && i < this.orderList.length; i++, j++) {
+                        tempList[j] = this.orderList[i];
+                    }
+                    return tempList;
+                },
+                pageCount: function () {
+                    return Math.ceil(this.orderList.length / 5);
+                },
+                nowPageNum: function () {
+                    return (this.pageNum - 1) * 5;
+                },
+                stateName() {
+                    return function (state) {
+                        return state == 1 ? "未付款" : state == 2 ? "已付款" : state == 3 ? "已接单" : state == 4 ? "派送中" : state == 5 ? "已完成" : "已取消";
+                    }
+                },
+                dataNullMsg: function () {
+                    return this.orderList.length == 0 ? "暂无数据" : "";
+                }
+            }
+        })
+    </script>
+}

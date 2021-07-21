@@ -1,0 +1,103 @@
+﻿
+<div id="right">
+    <div id="position">
+        您当前的位置：<span id="SiteMapPath1" class="nav"><a href="#SiteMapPath1_SkipLink" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">跳过导航链接</a><span><a>后台管理页面</a></span><span> &gt; </span><span><a>菜品管理</a></span><span> &gt; </span><span>添加菜品</span><a id="SiteMapPath1_SkipLink"></a></span>
+    </div>
+    <div id="content" style="margin-top:20px;">
+
+        <div>
+            <div class="row">
+                <span class="title">菜品名称：</span><span class="info"><input style="height:30px;" name="txtFoodName" type="text" id="ContentPlaceHolder1_txtFoodName" v-model="food.FoodName" /><span class="error_msg" id="foodNameMsg"></span></span>
+            </div>
+            <div class="row">
+                <span class="title">菜品类型：</span><span class="info">
+                    <select name="ddlFoodType" id="ContentPlaceHolder1_ddlFoodType" v-model="food.FoodTypeId">
+                        <option value="0">请选择</option>
+                        <option value="1">主食</option>
+                        <option value="2">热菜系列</option>
+                        <option value="3">经典凉拌</option>
+                        <option value="4">海鲜盛宴</option>
+                        <option value="5">传统烧烤</option>
+                        <option value="6">餐后甜点</option>
+
+                    </select>
+                    <span class="error_msg" id="FoodTypeIdMsg"></span>
+                </span>
+            </div>
+            <div class="row">
+                <span class="title">单价：</span><span class="info"><input style="height:30px;" name="txtPrice" type="number" id="ContentPlaceHolder1_txtPrice" v-model="food.Price" /><span class="error_msg" id="PriceMsg"></span></span>
+            </div>
+            <div class="row">
+                <span class="title pic">图片：</span>
+                <span class="info pic">
+                    <input type="file" name="ctl00$ContentPlaceHolder1$uploadPic" id="ContentPlaceHolder1_uploadPic" />
+                    <input style="height:25px;line-height:25px;" type="button" v-on:click="upLoad" name="ctl00$ContentPlaceHolder1$btnUpload" value="上传" id="ContentPlaceHolder1_btnUpload" class="btn_select" />
+                    <img id="ContentPlaceHolder1_imgFoodPic" class="img_food" />
+                </span>
+            </div>
+            <div class="row">
+                <span class="title multiline">备注：</span><span class="info multiline">
+                    <textarea name="txtDesc" rows="2" cols="20" id="ContentPlaceHolder1_txtDesc" class="input_multiline" v-model="food.Desc"></textarea>
+                </span>
+            </div>
+            <div class="row_btn">
+                <input type="button" v-on:click="onSubmit" style="margin-top:10px;height:25px;line-height:25px;" name="ctl00$ContentPlaceHolder1$btnAdd" value="保存" id="ContentPlaceHolder1_btnAdd" class="btn_select" />
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var vm = new Vue({
+            el: "#right",
+            data: {
+                food: {
+                    FoodName: "",
+                    FoodTypeId: 0,
+                    Price: 0.0,
+                    PicUrl: "",
+                    Desc: ""
+                }
+            },
+            methods: {
+                upLoad: function () {
+                    var _this = this;
+                    var formData = new FormData();
+                    formData.append("file", $("#ContentPlaceHolder1_uploadPic")[0].files[0]);
+                    axios.post("/Foods/FileUpload", formData, { headers: { "Content-Type": "multipart/form-data" } }).then(res => {
+                        if (res.data == "noFile") {
+                            alert("请选择需要上传的图片文件！");
+                        } else {
+                            this.food.PicUrl = res.data;
+                            $("#ContentPlaceHolder1_imgFoodPic").attr("src", "/" + res.data);
+                        }
+                    })
+                },
+                onSubmit: function () {
+                    if (this.food.FoodName == "") {
+                        $("#foodNameMsg").html("菜品名称不能为空！");
+                        return;
+                    } else $("#foodNameMsg").html("");
+                    if (this.food.FoodTypeId == 0) {
+                        $("#FoodTypeIdMsg").html("请选择菜品类型！");
+                        return;
+                    } else $("#FoodTypeIdMsg").html("");
+                    if (isNaN(this.food.Price) || this.food.Price == "") {
+                        $("#PriceMsg").html("菜品单价不能为空！");
+                        return;
+                    } else $("#PriceMsg").html("");
+                    axios.post("/Foods/addFood", JSON.stringify(this.food)).then(res => {
+                        if (res.data == "ok") {
+                            alert("添加食物成功！");
+                            window.location.href = "/Foods/FoodList";
+                        } else {
+                            alert("添加失败！");
+                        }
+                    })
+                }
+            }
+        })
+    </script>
+}

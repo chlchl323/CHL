@@ -1,0 +1,118 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "PersonOrderList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section js{
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#content',
+            data: {
+                orderLists: [],
+                selected: 0,
+            },
+            created: function () {
+                this.getOrderList();
+            },
+            methods: {
+                getOrderList: function () {
+                    axios.get('/Home/GetOrderList').then(res => {
+                        this.orderLists = res.data;
+                    })
+                },
+                selState: function (state) {
+                    return state == 1 ? "未付款" : state == 2 ? "已付款" : state == 3 ? "已接单" : state == 4 ? "派送中" : state == 5 ? "已完成" :  "已取消"
+                },
+                selOrderList: function () {
+                    axios.get('/Home/SelOrderList').then(res => {
+                        this.orderLists = res.data;
+                    })
+                },
+                select: function () {
+                    axios.get('/Home/Select?value=' + this.selected).then(res => {
+                        this.orderLists = res.data;
+                    })
+                },
+                detail: function (id) {
+                    location.href = "/Orders/OrderListDetail?id=" + id;
+                },
+                del: function (id) {
+                    axios.get('/Orders/DelOrder?id=' + id).then(res => {
+                        if (res.data == "ok") {
+                            alert("订单已取消！");
+                        } else {
+                            alert("取消失败！");
+                        }
+                        this.getOrderList();
+                    })
+                },
+                pay: function (id) {
+                    location.href = "/Pay/Pays?id="+id;
+                },
+                fin: function (id) {
+                    axios.get('/Home/FinOrder?id=' + id).then(res => {
+                        this.getOrderList();
+                    })
+                },
+            },
+        });
+    </script>
+}
+<style type="text/css">
+    .condition {
+        font-size: 12px;
+        height: 30px;
+        line-height: 30px;
+        margin-bottom: 10px;
+    }
+</style>
+<div id="content">
+
+    <div class="person_content">
+        <h2>订单信息</h2>
+        <div class="person_form">
+            
+            <div class="condition">
+                订单状态：
+                <select name="OrderState" id="ContentPlaceHolder1_ddlOrderState" v-model="selected">
+                    <option value="0">全部</option>
+                    <option value="1">未付款</option>
+                    <option value="2">已付款</option>
+                    <option value="3">已接单</option>
+                    <option value="4">派送中</option>
+                    <option value="5">已完成</option>
+                    <option value="6">已取消</option>
+                </select>
+                <input type="submit" name="btnSelect" value="查询" id="btnSelect" class="btn_select" @@click="select()" />
+            </div>
+            <div class="data">
+
+                <table class="list">
+                    <tr>
+                        <th>序号</th>
+                        <th>下单时间</th>
+                        <th>订单总额</th>
+                        <th>订单状态</th>
+                        <th>操作</th>
+                    </tr>
+
+                    <tr v-for="orderList,index in orderLists">
+                        <td>{{index+1}}</td>
+                        <td>{{orderList.dateCreate}}</td>
+                        <td>{{orderList.totle}}</td>
+                        <td>{{selState(orderList.orderState)}}</td>
+                        <td>
+                            <input type="image" name="btnDetail" title="详情" src="~/images/detail.jpg" v-on:click="detail(orderList.orderId)"/>
+                            <input v-if="orderList.orderState==1||orderList.orderState==2" type="image" name="btnCancel" title="取消" src="~/images/cancel.jpg"  v-on:click="del(orderList.orderId)" onclick="return confirm('是否取消订单？')"/>
+                            <input v-if="orderList.orderState==1"  type="image" name="btnPay" title="支付" src="~/images/pay.jpg" v-on:click="pay(orderList.orderId)"/>
+                            <input v-if="orderList.orderState==4"  type="image" name="btnFinish" title="完成" src="~/images/finish.jpg" v-on:click="fin(orderList.orderId)"/>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</div>

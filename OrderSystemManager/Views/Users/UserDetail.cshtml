@@ -1,0 +1,30 @@
+﻿@model OrderSystemManager.Models.User;
+<div id="right">
+    <div id="position">
+        您当前的位置：<span id="SiteMapPath1" class="nav"><a href="#SiteMapPath1_SkipLink" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">跳过导航链接</a><span><a>后台管理页面</a></span><span> &gt; </span><span><a>用户管理</a></span><span> &gt; </span><span><a href="/Users/UserList">用户查询</a></span><a id="SiteMapPath1_SkipLink">用户详情</a></span>
+    </div>
+    <div id="content">
+
+        <div>
+            <div class="row">
+                <span class="title">用户名：</span><span class="info">@Model.UserName</span>
+            </div>
+            <div class="row">
+                <span class="title">用户类型：</span><span class="info">@Model.UserType.UserTypeName</span>
+            </div>
+            <div class="row">
+                <span class="title">真实姓名：</span><span class="info">@Model.RealName</span>
+            </div>
+            <div class="row">
+                <span class="title">性别：</span><span class="info">@Model.Sex</span>
+            </div>
+            <div class="row">
+                <span class="title">联系方式：</span><span class="info">@Model.Phone</span>
+            </div>
+            <div class="row">
+                <span class="title">详细地址：</span><span class="info">@Model.Address</span>
+            </div>
+        </div>
+
+    </div>
+</div>
